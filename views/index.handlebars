@@ -1,0 +1,52 @@
+{{#each articles}}
+
+
+
+<li>
+	<div>
+		<p>Title: {{title}}</p>
+		<p>Updated: {{updated}}</p>
+	</div>
+	<div>
+		<p>Article Summary: {{summary}}</p>
+		<i>Please read the full article <a href="{{link}}" target="_blank">here</a>.</i>
+	</div>
+</li>
+
+
+<!-- Add comments -->
+<form id="form-add-{{_id}}" action="add/comment/{{_id}}" method ="post">
+	<div class="row">
+		<!-- Author name input -->
+		<div class="col-md-4">
+			<input id="author_name" name="name" type="text" class="validate">
+             			<label for="author_name">Your Name:</label>
+		</div>
+	</div>
+	<div class="row">
+		<!-- Comment input -->
+		<div class="col-md-4">
+			<textarea id="comment_box" name="comment" class="materialize-textarea"></textarea>
+              			<label for="comment_box">Your Comment:</label>
+		</div>
+	</div>
+	<div class="row">
+		<input class="btn add-comment-button" data-id="{{_id}}" type="submit" value="Submit">
+	</div>
+</form>
+
+
+<!-- Display comments -->
+<li>
+<p>{{#if comments}}</p>
+
+<p>{{#each comments}}</p>
+
+<p>{{author}}</p>
+
+<p>{{content}}</p>
+
+{{/each}}
+
+{{/if}}
+</li>

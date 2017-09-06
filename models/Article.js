@@ -17,7 +17,7 @@ var articleSchema = new Schema ({
 	summary: {
 		type: String,
 		required: true
-	}
+	},
 	//Article updated at
 	updated: {
 		type: String,
@@ -31,7 +31,7 @@ var articleSchema = new Schema ({
 });
 
 // Create the Article model with Mongoose
-var Article = mongoose.model('Article', ArticleSchema);
+var Article = mongoose.model('Article', articleSchema);
 
 
 

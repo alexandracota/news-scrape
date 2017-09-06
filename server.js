@@ -40,8 +40,8 @@ db.once('open', function() {
 });
 
 // // Import the Comment and Article models
-// var Comment = require('./models/Comment.js');
-// var Article = require('./models/Article.js');
+var Comment = require('./models/Comment.js');
+var Article = require('./models/Article.js');
 
 // Import Routes/Controller
 var router = require('./controllers/controller.js');
