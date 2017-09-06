@@ -1,0 +1,8 @@
+.jumbotron {
+	padding: 100px;
+	background-image: url(./assets/background-world-map.jpg);
+}
+
+.btn-primary {
+	background-color: #000000;
+}
