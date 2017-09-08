@@ -1,25 +1,36 @@
 //Node dependencies
 var express = require('express');
-var exphbs = require('express-handlebars');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var request = require('request'); //for web scraping
-var cheerio = require('cheerio');//for webscraping
+var logger = require("morgan");
+
+//For web scraping
+var request = require('request'); 
+var cheerio = require('cheerio');
+
+// Import the Comment and Article models
+var Comment = require('./models/Comment.js');
+var Article = require('./models/Article.js');
+
+//Set mongoose to leverage built in JavaScript ES6 Promises
+mongoose.Promise = Promise;
 
 //Create instance of express
 var app = express();
 
-//Initialize body parser
+// Use morgan and body parser with our app
+app.use(logger("dev"));
 app.use(bodyParser.urlencoded({
   extended: false
-}))
+}));
 
 // Serve Static Content
-app.use(express.static(process.cwd() + '/public'));
+app.use(express.static('public'));
 
-// Express-Handlebars
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+// // Set Express-Handlebars
+// var exphbs = require('express-handlebars');
+// app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+// app.set('view engine', 'handlebars');
 
 //Configuration with Mongoose
 //========================================================================
@@ -31,17 +42,16 @@ if(process.env.NODE_ENV == 'production'){
 	mongoose.connect('mongodb://localhost/news-scrape')
 };
 
+//Show any mongoose errors
 db.on('error', function(err) {
   console.log('Mongoose Error: ', err);
 });
 
+//Once logged in to the db through mongoose, log a sucess message
 db.once('open', function() {
   console.log('Mongoose connection successful.');
 });
 
-// // Import the Comment and Article models
-var Comment = require('./models/Comment.js');
-var Article = require('./models/Article.js');
 
 // Import Routes/Controller
 var router = require('./controllers/controller.js');
