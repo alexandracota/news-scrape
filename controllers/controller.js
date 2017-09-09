@@ -3,6 +3,7 @@ var express = require('express');
 var app = express.Router();
 var path = require('path');
 var request = require('request'); 
+var cheerio = require('cheerio');
 
 var Comment = require('../models/Comment.js');
 var Article = require('../models/Article.js');
@@ -140,6 +141,9 @@ app.post('/add/comment/:id', function(req, res) {
 //Need to add a Delete Comment route
 //=========================================================================
 
+// app.delete('delete/comment/:id', function (req, res){
+
+// }) 
 
 
 //Export router to server.js
