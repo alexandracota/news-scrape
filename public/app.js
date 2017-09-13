@@ -1,6 +1,22 @@
 $(document).ready(function() {
 
-	event.preventDefault();
+	// event.preventDefault();
+
+
+	//When someone clicks scrape button
+	$(".scrape").on("click", function() {
+		$.ajax({
+			method: "GET",
+			url: "/scrape"
+		})
+		.done(function(err, data) {
+			if (err) {
+				console.log("Error loading: " + err);
+			} else {
+				$("#articles").append("<h4>" + data.title + "</h4><br><p>" + data.link + "</p>");
+			}
+		})
+	})
 
 	//Grab the articles as a JSON
 	$.getJSON("/articles", function(data) {
@@ -12,7 +28,7 @@ $(document).ready(function() {
 	});
 
 	//When someone clicks an element with the comment id
-	$('a').on('click', function() {
+	$('.p').on('click', function() {
 		//save the class from the a tag
 		var thisId = $(this).attr("data-id");
 

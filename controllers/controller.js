@@ -11,35 +11,42 @@ var Article = require('../models/Article.js');
 //ROUTES
 //===================================
 
-// // Index Page Render (first visit to the site)
-// router.get('/', function (req, res){
-// 	res.redirect('/scrape');
-// });
+// Index Page Render (first visit to the site)
+app.get('/', function (req, res){
+	res.redirect('/scrape');
+});
 
 //A GET request to scrape the NY TImes world news website.
 //Web scrape
 app.get('/scrape', function(req, res) {
 	//Grab the body of the HTML with request
 	request('https://www.nytimes.com/section/world', function(err, res, html) {
+
+
 		//Load into cheerio and save it to $ for shorthand
 		var $ = cheerio.load(html);
 		// var titles = [];
 		//Grab every headline within an article tag
-		$('h2 .headline').each(function(i, element) {
+		$('h2.headline').each(function(element) {
+
+			console.log(element);
 			//Save an empty result object
 			var result = {};
 			//Collect article title
-			result.title = $(this).children('a').text().trim();
+			result.title = $(this).text();
 			//Collect article link
-			result.link = $(this).children('a').attr('href').trim();
+			result.link = $(this).children('a.href');
+			console.log($(this).text());
 			// //Collect article summary
 			// result.summary = $(this).children('div').text().trim()+ "";
-			
-			//Create a new entry and pass the result object to the entry			
-			var entry = new Article(result);
+			console.log(result.title);
+			console.log(result.link);
+			//Create a new Article and pass the result object to the newArticle			
+			var newArticle = new Article(result);
 
-			//Save the entry to the db
-			entry.save(function(err, doc) {
+			//Save the newArticle to the db
+			newArticle.save(function(err, doc) {
+				console.log(newArticle);
 				if (err) {
 					console.log(err);
 				} else {
@@ -58,23 +65,10 @@ app.get("/articles", function(req, res) {
 		if (err) {
 			console.log(err);
 		} else {
-			res.json(doc);
+			res.send(doc);
 		}
 	});
 });
-
-//Render Articles
-// app.get('/articles', function(req, res) {
-// 	//Sort in descending order, populate with comments and send to handlebars template.
-// 	Article.find().sort({id:-1}).populate('comments').exec(function(err, doc) {
-// 		if (err) {
-// 			console.log(err);
-// 		} else {
-// 			var hbsObject = {articles: doc};
-// 			res.render('index', hbsObject);
-// 		}
-// 	});
-// });
 
 //Route to Grab an article by it's ObjectId
 //===========================================================
@@ -90,19 +84,19 @@ app.get("/articles/:id", function(req, res) {
 			console.log(err);
 		//Otherwise, send the doc to the browser as a JSON object	
 		} else {
-			res.json(doc);
+			res.send(doc);
 		}
 	});
 });
 
 
 
-//Route to add a comment
+//Route to create a new comment or replace an existing comment
 //=========================================================================
-app.post('/add/comment/:id', function(req, res) {
+app.post('/articles/:id', function(req, res) {
 
-	//Create a new entry and pass in the req.body 
-	var entry = new Comment(req.body);
+	//Create a new comment and pass in the req.body 
+	var newComment = new Comment(req.body);
 
 	// var articleId = req.params.id;
 	// var commentAuthor = req.body.name;
@@ -113,8 +107,8 @@ app.post('/add/comment/:id', function(req, res) {
 	// };
 
 	
-	//Save the new entry to the db
-	entry.save(function(err, doc) {
+	//Save the new comment to the db
+	newComment.save(function(err, doc) {
 		//Log errors
 		if (err) {
 			console.log("Error: " + err);
@@ -129,7 +123,6 @@ app.post('/add/comment/:id', function(req, res) {
 				} else {
 					res.send(doc);
 				}
-
 			});
 		}
 	});

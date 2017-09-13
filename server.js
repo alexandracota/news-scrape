@@ -34,13 +34,14 @@ app.use(express.static('public'));
 
 //Configuration with Mongoose
 //========================================================================
-var db = mongoose.connection;
 
-if(process.env.NODE_ENV == 'production'){
-  mongoose.connect('mongodb://heroku_ftj5vmzd:36rlqt1j82aak1c83324arubk0@ds129144.mlab.com:29144/heroku_ftj5vmzd');
-} else {
-	mongoose.connect('mongodb://localhost/news-scrape')
-};
+
+// if(process.env.NODE_ENV == 'production'){
+//   mongoose.connect('mongodb://heroku_ftj5vmzd:36rlqt1j82aak1c83324arubk0@ds129144.mlab.com:29144/heroku_ftj5vmzd');
+// } else {
+mongoose.connect('mongodb://localhost/news-scrape');
+// };
+var db = mongoose.connection;
 
 //Show any mongoose errors
 db.on('error', function(err) {
