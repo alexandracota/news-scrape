@@ -1,22 +1,69 @@
 $(document).ready(function() {
 
-	// event.preventDefault();
+	//event.preventDefault();
 
 
 	//When someone clicks scrape button
 	$(".scrape").on("click", function() {
-		$.ajax({
-			method: "GET",
-			url: "/scrape"
-		})
-		.done(function(err, data) {
-			if (err) {
-				console.log("Error loading: " + err);
-			} else {
-				$("#articles").append("<h4>" + data.title + "</h4><br><p>" + data.link + "</p>");
-			}
-		})
-	})
+		//A GET request to scrape the NY TImes world news website.
+		//Web scrape
+		app.get('/scrape', function(req, res) {
+		//Grab the body of the HTML with request
+		request('https://www.nytimes.com/section/world', function(err, res, html) {
+
+
+			//Load into cheerio and save it to $ for shorthand
+			var $ = cheerio.load(html);
+			// var titles = [];
+			//Grab every headline within an article tag
+			$('h2.headline').each(function(element) {
+
+				console.log(element);
+				//Save an empty result object
+				var result = {};
+				//Collect article title
+				result.title = $(this).text();
+				//Collect article link
+				result.link = $(this).children('a.href');
+				console.log($(this).text());
+				// //Collect article summary
+				// result.summary = $(this).children('div').text().trim()+ "";
+				console.log(result.title);
+				console.log(result.link);
+				//Create a new Article and pass the result object to the newArticle			
+				var newArticle = new Article(result);
+
+				//Save the newArticle to the db
+				newArticle.save(function(err, doc) {
+					console.log(newArticle);
+					if (err) {
+						console.log(err);
+					} else {
+						console.log(doc);
+					}
+				});
+
+			});
+		});
+	res.send("Scrape complete!");
+});
+
+
+
+
+
+	// 	$.ajax({
+	// 		method: "GET",
+	// 		url: "/scrape"
+	// 	})
+	// 	.done(function(err, data) {
+	// 		if (err) {
+	// 			console.log("Error loading: " + err);
+	// 		} else {
+	// 			$("#articles").append("<h4>" + data.title + "</h4><br><p>" + data.link + "</p>");
+	// 		}
+	// 	})
+	// })
 
 	//Grab the articles as a JSON
 	$.getJSON("/articles", function(data) {
